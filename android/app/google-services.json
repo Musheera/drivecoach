@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "662058298787",
+    "firebase_url": "https://drivecoach-d21b9.firebaseio.com",
+    "project_id": "drivecoach-d21b9",
+    "storage_bucket": "drivecoach-d21b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662058298787:android:d4cb2c1a8c9523aafabe16",
+        "android_client_info": {
+          "package_name": "com.example.drivecoach"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662058298787-hdfr9ika29m237ndsbes19qignhpv5gi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdsXtBgZj9ijMMSi1aUpOh5MkeACNHWXA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "662058298787-hdfr9ika29m237ndsbes19qignhpv5gi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "662058298787-1tc7kjmam1vlgvrq8gj9730c312vfc4c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.android.application"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
