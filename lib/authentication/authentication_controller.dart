@@ -1,14 +1,32 @@
 import 'package:drivecoach/User/user_model.dart';
 import 'package:drivecoach/authentication/authentiable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseAuthenticationController {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  String type;
 
-  Future<FirebaseUser> getCurrentUser() async {
-    FirebaseUser currentUser = await _firebaseAuth.currentUser();
-    print(currentUser);
-    return currentUser;
+  final CollectionReference collectionRefrence =
+      Firestore.instance.collection('users');
+
+  final CollectionReference collectionRuleRefrence =
+  Firestore.instance.collection('rules');
+
+  final CollectionReference collectionTrainingRefrence =
+  Firestore.instance.collection('training');
+
+  Future<String> getCurrentUser() async {
+    return (await _firebaseAuth.currentUser()).uid;
+  }
+
+  Future<String> getUserType(String userId) async {
+    return type;
+  }
+
+  Future<void> deleteUser(String userId) async {
+    Future<DocumentSnapshot> user =
+        collectionRefrence.document(userId).delete();
   }
 
   @override
@@ -27,7 +45,7 @@ class FirebaseAuthenticationController {
   }
 
   @override
-   Future<void> logout() async{
+  Future<void> logout() async {
     return _firebaseAuth.signOut();
   }
 

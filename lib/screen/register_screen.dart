@@ -22,10 +22,10 @@ class _RegisterScreenState extends State<RegisterScreen>
           indicatorColor: Colors.white,
           tabs: [
             Tab(
-              text: "AS TRAINER",
+              text: "AS TRAINEE",
             ),
             Tab(
-              text: "AS TRAINEE",
+              text: "AS TRAINER",
             ),
           ],
           controller: _tabController,
