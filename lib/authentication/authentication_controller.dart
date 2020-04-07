@@ -16,6 +16,10 @@ class FirebaseAuthenticationController {
   final CollectionReference collectionTrainingRefrence =
   Firestore.instance.collection('training');
 
+
+  final CollectionReference collectionTrainingPayRefrence =
+  Firestore.instance.collection('payment');
+
   Future<String> getCurrentUser() async {
     return (await _firebaseAuth.currentUser()).uid;
   }

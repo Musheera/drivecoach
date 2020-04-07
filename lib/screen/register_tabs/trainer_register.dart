@@ -15,7 +15,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:date_format/date_format.dart';
 import 'package:path/path.dart' as Path;
+import 'package:progress_dialog/progress_dialog.dart';
 
+import '../Register2.dart';
 import '../trainer_main_screen.dart';
 
 class TrainerRegister extends StatefulWidget {
@@ -25,6 +27,7 @@ class TrainerRegister extends StatefulWidget {
 
 
 class _TrainerRegisterState extends State<TrainerRegister> {
+  ProgressDialog pr;
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FirebaseAuthenticationController authentiable =
@@ -78,6 +81,7 @@ class _TrainerRegisterState extends State<TrainerRegister> {
 
   @override
   Widget build(BuildContext context) {
+    pr = ProgressDialog(context);
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -224,7 +228,7 @@ class _TrainerRegisterState extends State<TrainerRegister> {
 
                       color: Colors.purple,
                       child: Text(
-                        "REGISTER",
+                        "NEXT >",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -278,16 +282,16 @@ class _TrainerRegisterState extends State<TrainerRegister> {
       firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((onValue) {
-        authentiable.login(email, password);
+
         userId = onValue.user.uid;
         uploadPic(context);
-
       });
     }
   }
 
 
   Future uploadPic(BuildContext context) async {
+    pr.show();
     fileName = Path.basename(_img.path);
 
     StorageReference firebaseStorageRefrences =
@@ -305,25 +309,33 @@ class _TrainerRegisterState extends State<TrainerRegister> {
         'user_type': 'trainer',
         'user_id': userId,
         'user_image': fileName
+      }).then((onValue){
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("Profile Picture uploaded! "),
+        ));
+        pr.hide().then((isHidden) {
+          print(isHidden);
+        });
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Register2(userId,email,password)));
       });
 
 
 
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text("Profile Picture uploaded! "),
-      ));
-      var name = _nameController.text;
-      Fluttertoast.showToast(msg: "Welcome $name");
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return TrainerMainScreen();
-          },
-        ),
-      );
+
+//      var name = _nameController.text;
+//      Fluttertoast.showToast(msg: "Welcome $name");
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(
+//          builder: (context) {
+//            return TrainerMainScreen();
+//          },
+//        ),
+//      );
     });
   }
+
+
 
 
 }

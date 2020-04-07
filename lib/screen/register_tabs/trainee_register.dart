@@ -14,6 +14,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:date_format/date_format.dart';
 import 'package:path/path.dart' as Path;
+import 'package:progress_dialog/progress_dialog.dart';
 
 class TraineeRegister extends StatefulWidget {
   @override
@@ -21,6 +22,8 @@ class TraineeRegister extends StatefulWidget {
 }
 
 class _TraineeRegisterState extends State<TraineeRegister> {
+  ProgressDialog pr;
+
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FirebaseAuthenticationController authentiable =
       FirebaseAuthenticationController();
@@ -72,6 +75,7 @@ class _TraineeRegisterState extends State<TraineeRegister> {
 
   @override
   Widget build(BuildContext context) {
+    pr = ProgressDialog(context);
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -281,6 +285,7 @@ class _TraineeRegisterState extends State<TraineeRegister> {
 
 
   Future uploadPic(BuildContext context) async {
+    pr.show();
     fileName = Path.basename(_img.path);
 
     StorageReference firebaseStorageRefrences =
@@ -305,6 +310,9 @@ class _TraineeRegisterState extends State<TraineeRegister> {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text("Profile Picture uploaded! "),
       ));
+      pr.hide().then((isHidden) {
+        print(isHidden);
+      });
       var name = _nameController.text;
       Fluttertoast.showToast(msg: "Welcome $name");
       Navigator.push(

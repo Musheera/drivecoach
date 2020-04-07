@@ -26,7 +26,10 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>User Location is Required to add course/string>
 	<key>UISupportedInterfaceOrientations</key>
+
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
@@ -42,4 +45,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
+
+NSLocationWhenInUseUsageDescription
+NSLocationAlwaysUsageDescription
 </plist>

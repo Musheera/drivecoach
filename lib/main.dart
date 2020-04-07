@@ -5,8 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screen/main_screen.dart';
 import 'screen/home_screen.dart';
 import 'authentication/authentication_controller.dart';
+//import 'package:map_view/map_view.dart';
 
 void main() {
+  //MapView.setApiKey("AIzaSyBqTK4Ugc3tzN3M49n1q9qW33U-X8HZhEU");
   runApp(DriveApp());
 }
 
