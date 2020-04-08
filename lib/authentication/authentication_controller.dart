@@ -13,6 +13,9 @@ class FirebaseAuthenticationController {
   final CollectionReference collectionRuleRefrence =
   Firestore.instance.collection('rules');
 
+  final CollectionReference collectionmessageRefrence =
+  Firestore.instance.collection('message');
+
   final CollectionReference collectionTrainingRefrence =
   Firestore.instance.collection('training');
 

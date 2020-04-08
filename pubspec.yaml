@@ -49,7 +49,7 @@ dependencies:
   flutter_credit_card: ^0.1.3
   dash_chat: ^1.0.18
   flutter_rating: ^0.0.2
-  zoomable_image: ^1.3.1
+  imagebutton: ^0.0.6
 
 
 

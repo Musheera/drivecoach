@@ -4,10 +4,12 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:drivecoach/authentication/authentication_controller.dart';
 import 'package:drivecoach/authentication/firebase_auth.dart';
 import 'package:drivecoach/main.dart';
+import 'package:drivecoach/screen/view_trainer_rating.dart';
 import 'package:drivecoach/screen/view_traffic_users.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'add_training_course.dart';
 import 'login_screen.dart';
@@ -33,16 +35,67 @@ class _TrainerMainScreenState extends State<TrainerMainScreen> {
   FirebaseAuthenticationController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _messageController = TextEditingController();
   @override
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
+    _titleController.dispose();
+    _messageController.dispose();
   }
+
+
+
+
   String userName;
   String userPhone;
   String userEmail;
   String userId;
   String userImage;
+
+
+
+  QuerySnapshot trainerRating;
+  double avg =  0;
+  double copy = 0;
+
+  getRating() async {
+    print("id   $currentUserId");
+    return await Firestore.instance
+        .collection('rating')
+        .where('rated_id', isEqualTo: currentUserId).getDocuments().then((onValue){
+      setState(() {
+        trainerRating = onValue;
+        print('length  ${trainerRating.documents.length}');
+        copy = avgRating();
+        avg = 0;
+      });
+    });
+
+  }
+
+  void initState() {
+    super.initState();
+
+  }
+
+
+
+
+
+  double avgRating() {
+    for (int i = 0; i < trainerRating.documents.length; i++) {
+      avg = avg + trainerRating.documents[i].data['stars'];
+      print("no  $trainerRating.documents[i].data['stars']");
+    }
+
+    print('avg  $avg');
+    return avg/trainerRating.documents.length;
+  }
+
+
+
 
   Future<String> getUsernfo() async {
     String uid = await authentiable.getCurrentUser();
@@ -73,6 +126,33 @@ class _TrainerMainScreenState extends State<TrainerMainScreen> {
     });
   }
 
+  static String currentUserId;
+
+  Future<FirebaseUser> user =
+  FirebaseAuth.instance.currentUser().then((onValue) {
+    currentUserId = onValue.uid;
+    return onValue;
+  });
+
+
+  void sendMessage() {
+    authentiable.collectionmessageRefrence.document().setData({
+      'title': _titleController.text,
+      'message': _messageController.text,
+      'user_id': currentUserId
+    });
+    Fluttertoast.showToast(
+        msg:
+        "The message with " + _titleController.text + " title is sent");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return TrainerMainScreen();
+        },
+      ),
+    );
+  }
 
 
   //String get userImage => null;
@@ -127,7 +207,9 @@ class _TrainerMainScreenState extends State<TrainerMainScreen> {
     } else if (index == 1) {
       getUsernfo();
       return viewProfile();
-    } else {}
+    } else {
+      return addMessage();
+    }
 
     final CurvedNavigationBarState navBarState =
         _bottomNavigationKey.currentState;
@@ -188,13 +270,24 @@ class _TrainerMainScreenState extends State<TrainerMainScreen> {
           height: 50,
         ),
         IconButton(
-          icon: Icon(Icons.people),
+          icon: Icon(Icons.rate_review),
           iconSize: 50,
           color: Colors.purple,
           disabledColor: Colors.purple,
-          onPressed: () {},
+          onPressed: () {
+            getRating();
+            print("avvvvvvvg $avg");
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return ViewRating(copy);
+                },
+              ),
+            );
+          },
         ),
-        Text("BOOKING"),
+        Text("VIEW RATING"),
         SizedBox(
           width: double.infinity,
           height: 50,
@@ -468,4 +561,76 @@ class _TrainerMainScreenState extends State<TrainerMainScreen> {
   }
 
 
+  Widget addMessage() {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 40,
+        ),
+        TextFormField(
+          controller: _titleController,
+          decoration: InputDecoration(
+            hintText: "Message title",
+          ),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Message title is required';
+            } else if(value.length < 30){
+              return ' title text has to be more than 30 charecteristic';
+            }else
+              return null;
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 48,
+            right: 48,
+          ),
+        ),
+        TextFormField(
+          controller: _messageController,
+          maxLines: 13,
+          decoration: InputDecoration(
+            hintMaxLines: 20,
+            hintText: "Message",
+          ),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Message is required';
+            } else if(value.length < 90){
+              return 'Message text has to be more than 90 charecteristic';
+            }else
+              return null;
+          },
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 30, left: 16, right: 16),
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: RaisedButton(
+                    color: Colors.purple,
+                    child: Text(
+                      "Send",
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 16, letterSpacing: 1),
+                    ),
+                    onPressed: () async {
+                      sendMessage();
+                    },
+                  ),
+                ),
+                SizedBox(height: 10,),
+
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

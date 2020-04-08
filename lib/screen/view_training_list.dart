@@ -128,7 +128,7 @@ class _ViewTrainingListState extends State<ViewTrainingList> {
       );
     } else if (trainingNo != null && trainingNo.documents.length == 0) {
       return Text(
-        "No Users!",
+        "No Training Course!",
         style: TextStyle(fontSize: 19),
       );
     } else {

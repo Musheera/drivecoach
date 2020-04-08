@@ -1,5 +1,6 @@
 import 'package:drivecoach/authentication/authentication_controller.dart';
 import 'package:drivecoach/screen/view_training_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -60,6 +61,15 @@ class _AddTrainingState extends State<AddTraining> {
     );
   }
 
+  static String currentUserId;
+
+  Future<FirebaseUser> user =
+  FirebaseAuth.instance.currentUser().then((onValue) {
+    currentUserId = onValue.uid;
+    return onValue;
+  });
+
+
   void addTraining() {
     authentiable.collectionTrainingRefrence.document().setData({
       'title': _titleController.text,
@@ -68,7 +78,7 @@ class _AddTrainingState extends State<AddTraining> {
       'duration': _durationController.text,
       'price_per_hour': _priceController.text,
       'location' : _locationController.text,
-      'payment': ""
+      'user_id': currentUserId
     });
     Fluttertoast.showToast(msg: "The Training Course  is added");
   }

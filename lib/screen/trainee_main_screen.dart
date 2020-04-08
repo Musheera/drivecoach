@@ -11,6 +11,7 @@ import 'package:drivecoach/screen/view_training_list_users.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'login_screen.dart';
 import 'dart:io';
@@ -35,16 +36,25 @@ class _TraineeMainScreenState extends State<TraineeMainScreen> {
       FirebaseAuthenticationController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _messageController = TextEditingController();
   @override
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
+    _titleController.dispose();
+    _messageController.dispose();
   }
   String userName;
   String userPhone;
   String userEmail;
   String userId;
   String userImage;
+
+
+
+
+
 
   Future<String> getUsernfo() async {
     String uid = await authentiable.getCurrentUser();
@@ -76,6 +86,31 @@ class _TraineeMainScreenState extends State<TraineeMainScreen> {
   }
 
 
+  static String currentUserId;
+
+  Future<FirebaseUser> user =
+  FirebaseAuth.instance.currentUser().then((onValue) {
+    currentUserId = onValue.uid;
+    return onValue;
+  });
+  void sendMessage() {
+    authentiable.collectionmessageRefrence.document().setData({
+      'title': _titleController.text,
+      'message': _messageController.text,
+      'user_id': currentUserId
+    });
+    Fluttertoast.showToast(
+        msg:
+        "The message with " + _titleController.text + " title is sent");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return TraineeMainScreen();
+        },
+      ),
+    );
+  }
 
   //String get userImage => null;
 
@@ -129,7 +164,9 @@ class _TraineeMainScreenState extends State<TraineeMainScreen> {
     } else if (index == 1) {
       getUsernfo();
       return viewProfile();
-    } else {}
+    } else {
+      return addMessage();
+    }
 
     final CurvedNavigationBarState navBarState =
         _bottomNavigationKey.currentState;
@@ -483,6 +520,81 @@ class _TraineeMainScreenState extends State<TraineeMainScreen> {
     print(userPhone);
 
   }
+
+
+  Widget addMessage() {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 40,
+        ),
+        TextFormField(
+          controller: _titleController,
+          decoration: InputDecoration(
+            hintText: "Message title",
+          ),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Message title is required';
+            } else if(value.length < 30){
+              return ' title text has to be more than 30 charecteristic';
+            }else
+              return null;
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 48,
+            right: 48,
+          ),
+        ),
+        TextFormField(
+          controller: _messageController,
+          maxLines: 13,
+          decoration: InputDecoration(
+            hintMaxLines: 20,
+            hintText: "Message",
+          ),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Message is required';
+            } else if(value.length < 90){
+              return 'Message text has to be more than 90 charecteristic';
+            }else
+              return null;
+          },
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 30, left: 16, right: 16),
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: RaisedButton(
+                    color: Colors.purple,
+                    child: Text(
+                      "Send",
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 16, letterSpacing: 1),
+                    ),
+                    onPressed: () async {
+                      sendMessage();
+                    },
+                  ),
+                ),
+                SizedBox(height: 10,),
+
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 
 
 }

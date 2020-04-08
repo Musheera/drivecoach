@@ -5,6 +5,9 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:drivecoach/authentication/authentication_controller.dart';
 import 'package:drivecoach/authentication/firebase_auth.dart';
 import 'package:drivecoach/main.dart';
+import 'package:drivecoach/screen/view_messages.dart';
+import 'package:drivecoach/screen/view_trainer_list.dart';
+import 'package:drivecoach/screen/view_training_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -174,9 +177,18 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
           iconSize: 50,
           color: Colors.purple,
           disabledColor: Colors.purple,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return ViewTrainingList();
+                },
+              ),
+            );
+          },
         ),
-        Text("ADD & FIND PLACE"),
+        Text("VIEW TRAINING COURSES"),
         SizedBox(
           width: double.infinity,
           height: 50,
@@ -204,13 +216,23 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
           height: 50,
         ),
         IconButton(
-          icon: Icon(Icons.people),
+          icon: Icon(Icons.message),
           iconSize: 50,
           color: Colors.purple,
           disabledColor: Colors.purple,
-          onPressed: () {},
+          onPressed: () {
+            getMessages();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return ViewMessageList();
+                },
+              ),
+            );
+          },
         ),
-        Text("BOOKING"),
+        Text("MESSAGE"),
         SizedBox(
           width: double.infinity,
           height: 50,
